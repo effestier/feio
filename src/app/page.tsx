@@ -1,5 +1,13 @@
-import Hero from "@/components/hero/Hero";
+import CursorSystem from "@/components/shared/CursorSystem";
+import NoiseOverlay from "@/components/shared/NoiseOverlay";
+import DimensionRouter from "@/components/shared/DimensionRouter";
 
 export default function Home() {
-  return <Hero />;
+  return (
+    <>
+      <CursorSystem />
+      <NoiseOverlay />
+      <DimensionRouter />
+    </>
+  );
 }
