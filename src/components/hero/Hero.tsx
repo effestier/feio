@@ -126,8 +126,17 @@ export default function Hero() {
   const rafRef = useRef(0);
   const cursorRef = useRef({ x: 0.5, y: 0.5 });
   const cursorGlowRef = useRef<HTMLDivElement>(null);
-  const cursorGhostRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Cursor corruption — ghost clone positions (updated by rAF)
+  const [cursorGhosts, setCursorGhosts] = useState<
+    Array<{ x: number; y: number; id: number }>
+  >([]);
+  const ghostHistoryRef = useRef<Array<{ x: number; y: number; t: number }>>(
+    [],
+  );
+  const ghostFrameRef = useRef(0);
+  const ghostIdRef = useRef(0);
 
   // Generate per-level quantities
   const triggerDestruction = useCallback(
@@ -143,11 +152,11 @@ export default function Hero() {
         newCracks.push(generateCrackNetwork(w, h));
       }
 
-      // Scaling debris quantities
-      const codeCount = [0, 8, 14, 22, 30][nextState];
-      const domCount = [0, 4, 8, 14, 20][nextState];
-      const skelCount = [0, 4, 8, 14, 20][nextState];
-      const shardCount = [0, 16, 24, 34, 44][nextState];
+      // Scaling debris quantities — state 1 hits HARD
+      const codeCount = [0, 16, 22, 30, 38][nextState];
+      const domCount = [0, 8, 12, 18, 24][nextState];
+      const skelCount = [0, 6, 10, 16, 22][nextState];
+      const shardCount = [0, 28, 36, 44, 52][nextState];
 
       setCrackNetworks((prev) => [...prev, ...newCracks]);
       setAllCode((prev) => [
@@ -197,18 +206,28 @@ export default function Hero() {
 
     for (const network of crackNetworks) {
       for (const seg of network.segments) {
+        // Wide glow layer
         ctx.beginPath();
         ctx.moveTo(seg.x1, seg.y1);
         ctx.lineTo(seg.x2, seg.y2);
-        ctx.strokeStyle = `rgba(255,255,255,${seg.opacity * 0.3})`;
-        ctx.lineWidth = seg.glowWidth;
+        ctx.strokeStyle = `rgba(255,255,255,${seg.opacity * 0.5})`;
+        ctx.lineWidth = seg.glowWidth * 1.5;
         ctx.stroke();
 
+        // Mid glow
         ctx.beginPath();
         ctx.moveTo(seg.x1, seg.y1);
         ctx.lineTo(seg.x2, seg.y2);
-        ctx.strokeStyle = `rgba(255,255,255,${seg.opacity})`;
-        ctx.lineWidth = seg.width;
+        ctx.strokeStyle = `rgba(255,255,255,${seg.opacity * 0.7})`;
+        ctx.lineWidth = seg.glowWidth * 0.6;
+        ctx.stroke();
+
+        // Core line — bright
+        ctx.beginPath();
+        ctx.moveTo(seg.x1, seg.y1);
+        ctx.lineTo(seg.x2, seg.y2);
+        ctx.strokeStyle = `rgba(255,255,255,${Math.min(seg.opacity * 1.4, 1)})`;
+        ctx.lineWidth = seg.width * 1.3;
         ctx.stroke();
       }
     }
@@ -265,19 +284,67 @@ export default function Hero() {
       const ny = e.clientY / window.innerHeight;
       cursorRef.current = { x: nx, y: ny };
 
+      // Record history for ghost trails
+      if (state >= 1) {
+        ghostHistoryRef.current.push({ x: nx, y: ny, t: Date.now() });
+        if (ghostHistoryRef.current.length > 60) {
+          ghostHistoryRef.current.shift();
+        }
+      }
+
       // Update cursor glow position directly
       if (cursorGlowRef.current) {
         cursorGlowRef.current.style.background = `radial-gradient(circle 300px at ${nx * 100}% ${ny * 100}%, rgba(255,255,255,${0.01 + state * 0.008}) 0%, transparent 100%)`;
       }
-
-      // Update cursor ghost directly (state 3+)
-      if (cursorGhostRef.current && state >= 3) {
-        cursorGhostRef.current.style.left = `${nx * 100}%`;
-        cursorGhostRef.current.style.top = `${ny * 100}%`;
-      }
     };
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
+  }, [state]);
+
+  // Cursor ghost generation loop (state 1+)
+  useEffect(() => {
+    if (state < 1) return;
+
+    const ghostLoop = () => {
+      const now = Date.now();
+      const history = ghostHistoryRef.current;
+
+      // How many ghosts and how far back to look
+      const ghostCount = state === 1 ? 1 : state === 2 ? 2 : state === 3 ? 3 : 4;
+      const lagMs = state === 1 ? 120 : state === 2 ? 180 : state === 3 ? 250 : 350;
+
+      const newGhosts: Array<{ x: number; y: number; id: number }> = [];
+
+      for (let i = 0; i < ghostCount; i++) {
+        const targetTime = now - lagMs * (i + 1);
+        // Find the history entry closest to targetTime
+        let closest = history[0];
+        let minDiff = Infinity;
+        for (const h of history) {
+          const diff = Math.abs(h.t - targetTime);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closest = h;
+          }
+        }
+        if (closest) {
+          // Add slight random offset for state 3+ (chromatic split feel)
+          const offsetX = state >= 3 ? (Math.random() - 0.5) * 0.015 : 0;
+          const offsetY = state >= 3 ? (Math.random() - 0.5) * 0.015 : 0;
+          newGhosts.push({
+            x: closest.x + offsetX,
+            y: closest.y + offsetY,
+            id: i,
+          });
+        }
+      }
+
+      setCursorGhosts(newGhosts);
+      ghostFrameRef.current = requestAnimationFrame(ghostLoop);
+    };
+
+    ghostFrameRef.current = requestAnimationFrame(ghostLoop);
+    return () => cancelAnimationFrame(ghostFrameRef.current);
   }, [state]);
 
   // Cursor stress distortion (state 0+ — subtle)
@@ -598,8 +665,8 @@ export default function Hero() {
                 rotate: shard.rot,
               }}
               transition={{
-                delay: shard.delay,
-                duration: 0.8 + Math.random() * 0.3,
+                delay: shard.delay * 0.5,
+                duration: 0.55 + Math.random() * 0.2,
                 ease: EXPLOSIVE,
               }}
               exit={{
@@ -642,21 +709,56 @@ export default function Hero() {
         }}
       />
 
-      {/* ── Cursor lag trail (state 3+) ─────────────────── */}
-      {state >= 3 && (
+      {/* ── Cursor ghost clones (state 1+) ──────────────── */}
+      {state >= 1 &&
+        cursorGhosts.map((ghost) => (
+          <div
+            key={`ghost-${ghost.id}`}
+            className="pointer-events-none fixed z-[48] -translate-x-1/2 -translate-y-1/2"
+            style={{
+              left: `${ghost.x * 100}%`,
+              top: `${ghost.y * 100}%`,
+              opacity: state === 1 ? 0.12 : state === 2 ? 0.18 : 0.15 - ghost.id * 0.03,
+              transform: `translate(-50%, -50%) scale(${1 - ghost.id * 0.08})`,
+            }}
+          >
+            {/* Crosshair-style cursor ghost */}
+            <div className="relative h-5 w-5">
+              <div
+                className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2"
+                style={{
+                  background: `rgba(255,255,255,${state >= 3 ? 0.4 : 0.25})`,
+                }}
+              />
+              <div
+                className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2"
+                style={{
+                  background: `rgba(255,255,255,${state >= 3 ? 0.4 : 0.25})`,
+                }}
+              />
+              {/* Center dot */}
+              <div
+                className="absolute left-1/2 top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                style={{
+                  background: `rgba(255,255,255,${state >= 3 ? 0.5 : 0.3})`,
+                }}
+              />
+            </div>
+          </div>
+        ))}
+
+      {/* ── Cursor flicker/disappearance (state 4) ──────── */}
+      {state >= 4 && (
         <motion.div
-          ref={cursorGhostRef}
-          className="pointer-events-none fixed z-[48] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.15]"
+          className="pointer-events-none fixed inset-0 z-[47]"
+          style={{ cursor: "none" }}
           animate={{
-            x: [0, -(state * 3), state * 2, -(state * 1.5), 0],
-            y: [0, state * 2, -(state * 3), state * 1, 0],
-            scale: [1, 1.2, 0.8, 1.1, 1],
-            opacity: [0.15, 0.25, 0.1, 0.2, 0.15],
+            opacity: [1, 1, 0, 1, 1, 0, 0, 1, 1],
           }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            left: "50%",
-            top: "50%",
+          transition={{
+            duration: 2.5,
+            repeat: Infinity,
+            ease: "linear",
           }}
         />
       )}
