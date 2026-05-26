@@ -15,3 +15,51 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── SystemRupture keyframes ────────────────────────────── */
+
+@keyframes rupture-scatter {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: var(--target-opacity, 0.12);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0px), var(--ty, 0px));
+  }
+}
+
+@keyframes rupture-dom {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.3);
+  }
+  10% {
+    opacity: 0.08;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 45deg)) scale(0.8);
+  }
+}
+
+@keyframes rupture-error {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  8% {
+    opacity: 0.15;
+    transform: translate(calc(var(--tx, 0px) * 0.3), calc(var(--ty, 0px) * 0.3)) scale(1.1);
+  }
+  30% {
+    opacity: 0.12;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.6);
+  }
+}

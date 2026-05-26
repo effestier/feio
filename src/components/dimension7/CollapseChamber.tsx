@@ -11,6 +11,9 @@ import { useInterferenceBleed } from "@/systems/collapse/interferenceBleed";
 import { useAutonomousObserver } from "@/systems/collapse/autonomousObserver";
 import { useBehaviorTracker } from "@/systems/awareness/behaviorTracker";
 import { useAwarenessEngine } from "@/systems/awareness/awarenessEngine";
+import { useAnomalyEngine } from "@/systems/procedural/anomalyEngine";
+import { useAnomalySpawner, DIMENSION_PROFILES } from "@/systems/procedural/anomalySpawner";
+import AnomalyRenderer from "@/systems/procedural/anomalyRenderer";
 import type { CollapseNodeConfig } from "./CollapseNode";
 
 /* ── Pointer tracking ───────────────────────────────────── */
@@ -85,11 +88,26 @@ function CollapseCameraRig() {
 function CollapseTick() {
   const tick = useCollapseEngine((s) => s.tick);
   const awarenessTick = useAwarenessEngine((s) => s.tick);
+  const anomalyTick = useAnomalyEngine((s) => s.tick);
   useFrame(() => {
     tick();
     awarenessTick();
+    anomalyTick();
   });
   return null;
+}
+
+/* ── Anomaly layer ──────────────────────────────────────── */
+
+function AnomalyLayer() {
+  const anomalies = useAnomalySpawner(DIMENSION_PROFILES.collapse);
+  return (
+    <>
+      {anomalies.map((anomaly) => (
+        <AnomalyRenderer key={anomaly.id} anomaly={anomaly} />
+      ))}
+    </>
+  );
 }
 
 /* ── Multi-system particle field ────────────────────────── */

@@ -10,6 +10,9 @@ import type { ContradictoryNodeConfig } from "./ContradictoryNode";
 import { Text } from "@react-three/drei";
 import { useInterfaceLabel } from "@/systems/logic/interfaceContradiction";
 import { useDimensionStore } from "@/systems/progression/dimensionStore";
+import { useAnomalyEngine } from "@/systems/procedural/anomalyEngine";
+import { useAnomalySpawner, DIMENSION_PROFILES } from "@/systems/procedural/anomalySpawner";
+import AnomalyRenderer from "@/systems/procedural/anomalyRenderer";
 
 /* ── Pointer tracking ───────────────────────────────────── */
 
@@ -135,8 +138,25 @@ function LogicCameraRig() {
 
 function LogicTick() {
   const tick = useLogicEngine((s) => s.tick);
-  useFrame(() => tick());
+  const anomalyTick = useAnomalyEngine((s) => s.tick);
+  useFrame(() => {
+    tick();
+    anomalyTick();
+  });
   return null;
+}
+
+/* ── Anomaly layer ──────────────────────────────────────── */
+
+function AnomalyLayer() {
+  const anomalies = useAnomalySpawner(DIMENSION_PROFILES.logic);
+  return (
+    <>
+      {anomalies.map((anomaly) => (
+        <AnomalyRenderer key={anomaly.id} anomaly={anomaly} />
+      ))}
+    </>
+  );
 }
 
 /* ── Contradictory particles ────────────────────────────── */
@@ -428,6 +448,7 @@ function SceneContent() {
       <LogicParticles />
       <LogicFog />
       <LogicExitPortal />
+      <AnomalyLayer />
 
       <ambientLight intensity={0.012} color="#ffffff" />
     </>
@@ -477,12 +498,18 @@ export default function LogicChamber() {
   const activate = useLogicEngine((s) => s.activate);
   const deactivate = useLogicEngine((s) => s.deactivate);
   const setLevel = useLogicEngine((s) => s.setContradictionLevel);
+  const activateAnomalies = useAnomalyEngine((s) => s.activate);
+  const deactivateAnomalies = useAnomalyEngine((s) => s.deactivate);
 
   useEffect(() => {
     setLevel(0.7);
     activate();
-    return () => deactivate();
-  }, [activate, deactivate, setLevel]);
+    activateAnomalies();
+    return () => {
+      deactivate();
+      deactivateAnomalies();
+    };
+  }, [activate, deactivate, setLevel, activateAnomalies, deactivateAnomalies]);
 
   return (
     <div className="fixed inset-0 z-0">

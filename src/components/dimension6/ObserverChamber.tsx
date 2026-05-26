@@ -10,6 +10,9 @@ import { useBehaviorTracker } from "@/systems/awareness/behaviorTracker";
 import { useObserverResponse } from "@/systems/awareness/observerResponse";
 import { useObserverText } from "@/systems/awareness/observerTypography";
 import { useDimensionStore } from "@/systems/progression/dimensionStore";
+import { useAnomalyEngine } from "@/systems/procedural/anomalyEngine";
+import { useAnomalySpawner, DIMENSION_PROFILES } from "@/systems/procedural/anomalySpawner";
+import AnomalyRenderer from "@/systems/procedural/anomalyRenderer";
 import type { ObserverNodeConfig } from "./ObserverNode";
 
 /* ── Pointer tracking ───────────────────────────────────── */
@@ -77,8 +80,25 @@ const NODE_CONFIGS: ObserverNodeConfig[] = [
 
 function AwarenessTick() {
   const tick = useAwarenessEngine((s) => s.tick);
-  useFrame(() => tick());
+  const anomalyTick = useAnomalyEngine((s) => s.tick);
+  useFrame(() => {
+    tick();
+    anomalyTick();
+  });
   return null;
+}
+
+/* ── Anomaly layer ──────────────────────────────────────── */
+
+function AnomalyLayer() {
+  const anomalies = useAnomalySpawner(DIMENSION_PROFILES.observer);
+  return (
+    <>
+      {anomalies.map((anomaly) => (
+        <AnomalyRenderer key={anomaly.id} anomaly={anomaly} />
+      ))}
+    </>
+  );
 }
 
 /* ── Camera rig — gentle parallax ───────────────────────── */
@@ -229,6 +249,7 @@ function SceneContent() {
       <ObserverTypography />
       <ObserverParticles />
       <ObserverFog />
+      <AnomalyLayer />
       <ObserverExitPortal />
 
       <ambientLight intensity={0.012} color="#ffffff" />

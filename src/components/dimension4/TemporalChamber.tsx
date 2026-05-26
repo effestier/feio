@@ -9,10 +9,14 @@ import { useTemporalEngine } from "@/systems/temporal/temporalEngine";
 import { useTemporalCursor } from "@/systems/temporal/temporalCursor";
 import { useDelayedReaction } from "@/systems/temporal/delayedReaction";
 import { useDimensionStore } from "@/systems/progression/dimensionStore";
+import { useAnomalyEngine } from "@/systems/procedural/anomalyEngine";
+import { useAnomalySpawner, DIMENSION_PROFILES } from "@/systems/procedural/anomalySpawner";
+import AnomalyRenderer from "@/systems/procedural/anomalyRenderer";
 
-/* ── Temporal object configurations ─────────────────────── */
+/* ── Temporal object configurations — expanded to 17 ────── */
 
 const TEMPORAL_OBJECTS = [
+  // Center cluster
   {
     position: [0, 0.3, -1] as [number, number, number],
     type: "torus-segment" as const,
@@ -46,6 +50,7 @@ const TEMPORAL_OBJECTS = [
     baseOpacity: 0.1,
     hoverOpacity: 0.22,
   },
+  // Mid field — original
   {
     position: [-3, 1.5, -3] as [number, number, number],
     type: "plane-cross" as const,
@@ -90,6 +95,119 @@ const TEMPORAL_OBJECTS = [
     baseOpacity: 0.05,
     hoverOpacity: 0.12,
   },
+  // NEW — expanded mid-field
+  {
+    position: [-4.5, -0.8, -2] as [number, number, number],
+    type: "torus-segment" as const,
+    scale: 0.45,
+    driftSpeed: 0.07,
+    driftAmp: 0.06,
+    rotSpeed: [0.002, 0.001, 0.003] as [number, number, number],
+    reversedMotion: true,
+    baseOpacity: 0.06,
+    hoverOpacity: 0.14,
+  },
+  {
+    position: [4.5, 1.2, -1.8] as [number, number, number],
+    type: "broken-ring" as const,
+    scale: 0.55,
+    driftSpeed: 0.09,
+    driftAmp: 0.04,
+    rotSpeed: [-0.001, 0.003, -0.001] as [number, number, number],
+    reversedMotion: false,
+    baseOpacity: 0.07,
+    hoverOpacity: 0.16,
+  },
+  {
+    position: [0, -1.8, -2.5] as [number, number, number],
+    type: "wireframe-icosa" as const,
+    scale: 0.5,
+    driftSpeed: 0.05,
+    driftAmp: 0.08,
+    rotSpeed: [0.002, -0.001, 0.002] as [number, number, number],
+    reversedMotion: true,
+    baseOpacity: 0.07,
+    hoverOpacity: 0.15,
+  },
+  // NEW — far field
+  {
+    position: [-5.5, 2.5, -4.5] as [number, number, number],
+    type: "void-sphere" as const,
+    scale: 0.3,
+    driftSpeed: 0.03,
+    driftAmp: 0.14,
+    rotSpeed: [0.001, 0.002, 0.001] as [number, number, number],
+    reversedMotion: false,
+    baseOpacity: 0.035,
+    hoverOpacity: 0.08,
+  },
+  {
+    position: [5.5, -2, -5] as [number, number, number],
+    type: "torus-segment" as const,
+    scale: 0.25,
+    driftSpeed: 0.04,
+    driftAmp: 0.11,
+    rotSpeed: [0.001, -0.002, 0.001] as [number, number, number],
+    reversedMotion: true,
+    baseOpacity: 0.03,
+    hoverOpacity: 0.07,
+  },
+  {
+    position: [-1.5, 3, -3.5] as [number, number, number],
+    type: "plane-cross" as const,
+    scale: 0.4,
+    driftSpeed: 0.035,
+    driftAmp: 0.07,
+    rotSpeed: [0.002, 0.001, -0.002] as [number, number, number],
+    reversedMotion: true,
+    baseOpacity: 0.04,
+    hoverOpacity: 0.09,
+  },
+  {
+    position: [3, -2.8, -3.5] as [number, number, number],
+    type: "broken-ring" as const,
+    scale: 0.35,
+    driftSpeed: 0.06,
+    driftAmp: 0.09,
+    rotSpeed: [-0.001, 0.002, 0.001] as [number, number, number],
+    reversedMotion: false,
+    baseOpacity: 0.04,
+    hoverOpacity: 0.09,
+  },
+  // NEW — deep field
+  {
+    position: [0, 0.5, -6] as [number, number, number],
+    type: "wireframe-icosa" as const,
+    scale: 0.4,
+    driftSpeed: 0.025,
+    driftAmp: 0.15,
+    rotSpeed: [0.001, 0.001, 0.002] as [number, number, number],
+    reversedMotion: true,
+    baseOpacity: 0.025,
+    hoverOpacity: 0.06,
+  },
+  {
+    position: [-3.5, -1.5, -7] as [number, number, number],
+    type: "void-sphere" as const,
+    scale: 0.2,
+    driftSpeed: 0.02,
+    driftAmp: 0.18,
+    rotSpeed: [0.001, 0.001, 0.001] as [number, number, number],
+    reversedMotion: false,
+    baseOpacity: 0.02,
+    hoverOpacity: 0.05,
+  },
+  {
+    position: [4, 1.8, -6.5] as [number, number, number],
+    type: "torus-segment" as const,
+    scale: 0.22,
+    driftSpeed: 0.03,
+    driftAmp: 0.13,
+    rotSpeed: [0.001, -0.001, 0.002] as [number, number, number],
+    reversedMotion: true,
+    baseOpacity: 0.02,
+    hoverOpacity: 0.05,
+  },
 ];
 
 /* ── Camera rig with temporal desync ────────────────────── */
@@ -101,7 +219,6 @@ function TemporalCameraRig() {
 
   useFrame(() => {
     const dp = desyncedRef.current;
-    // Convert screen coords to normalized (-1 to 1)
     const nx = (dp.x / window.innerWidth) * 2 - 1;
     const ny = -(dp.y / window.innerHeight) * 2 + 1;
 
@@ -211,15 +328,33 @@ function TemporalFog() {
   );
 }
 
-/* ── Temporal engine tick ───────────────────────────────── */
+/* ── Dual engine tick ───────────────────────────────────── */
 
-function TemporalTick() {
-  const tick = useTemporalEngine((s) => s.tick);
-  useFrame(() => tick());
+function DualTick() {
+  const temporalTick = useTemporalEngine((s) => s.tick);
+  const anomalyTick = useAnomalyEngine((s) => s.tick);
+  useFrame(() => {
+    temporalTick();
+    anomalyTick();
+  });
   return null;
 }
 
-/* ── Temporal exit portal — delayed click advances to D.05 ── */
+/* ── Anomaly layer ──────────────────────────────────────── */
+
+function AnomalyLayer() {
+  const anomalies = useAnomalySpawner(DIMENSION_PROFILES.temporal);
+
+  return (
+    <>
+      {anomalies.map((anomaly) => (
+        <AnomalyRenderer key={anomaly.id} anomaly={anomaly} />
+      ))}
+    </>
+  );
+}
+
+/* ── Temporal exit portal ───────────────────────────────── */
 
 function TemporalExitPortal() {
   const groupRef = useRef<THREE.Group>(null);
@@ -243,7 +378,6 @@ function TemporalExitPortal() {
   const hoveringRef = useRef(hovering);
   hoveringRef.current = hovering;
 
-  // Refs for useFrame
   const reactRef = useRef(false);
   const clickRef = useRef(false);
 
@@ -253,7 +387,6 @@ function TemporalExitPortal() {
     reactRef.current = isReactingRef.current;
     clickRef.current = clickFiredRef.current;
 
-    // Breathing
     const breathe = Math.sin(t * 0.5) * 0.015;
     const base = 0.06;
     let opacity = base + breathe;
@@ -269,14 +402,12 @@ function TemporalExitPortal() {
 
     matRef.current.opacity = opacity;
 
-    // Rotation
     groupRef.current.rotation.x = Math.sin(t * 0.15) * 0.05;
     groupRef.current.rotation.y += 0.004;
   });
 
   const handleClick = useCallback(() => {
     onClick();
-    // Delayed dimension jump — fires after clickDelay
     setTimeout(() => jumpDimension(5), 1000);
   }, [onClick, jumpDimension]);
 
@@ -307,13 +438,14 @@ function SceneContent() {
       <color attach="background" args={["#000000"]} />
       <fog attach="fog" args={["#000000", 5, 20]} />
 
-      <TemporalTick />
+      <DualTick />
       <TemporalCameraRig />
 
       {TEMPORAL_OBJECTS.map((config, i) => (
         <TemporalObject key={i} config={config} />
       ))}
 
+      <AnomalyLayer />
       <TemporalTypography />
       <TemporalParticles />
       <TemporalFog />
@@ -355,12 +487,18 @@ export default function TemporalChamber() {
   const activate = useTemporalEngine((s) => s.activate);
   const deactivate = useTemporalEngine((s) => s.deactivate);
   const setDrift = useTemporalEngine((s) => s.setDrift);
+  const activateAnomalies = useAnomalyEngine((s) => s.activate);
+  const deactivateAnomalies = useAnomalyEngine((s) => s.deactivate);
 
   useEffect(() => {
     setDrift(0.6);
     activate();
-    return () => deactivate();
-  }, [activate, deactivate, setDrift]);
+    activateAnomalies();
+    return () => {
+      deactivate();
+      deactivateAnomalies();
+    };
+  }, [activate, deactivate, setDrift, activateAnomalies, deactivateAnomalies]);
 
   return (
     <div className="fixed inset-0 z-0">

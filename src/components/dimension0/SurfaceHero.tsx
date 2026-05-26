@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import PortalButton from "@/components/shared/PortalButton";
+import SystemRupture from "@/components/dimension0/SystemRupture";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -28,6 +30,12 @@ const fadeIn = {
 };
 
 export default function SurfaceHero() {
+  const [ruptureVisible, setRuptureVisible] = useState(false);
+
+  const handleRupture = useCallback(() => {
+    setRuptureVisible(true);
+  }, []);
+
   return (
     <section className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-black">
       {/* Radial ambient */}
@@ -71,11 +79,14 @@ export default function SurfaceHero() {
           Controlled ugliness still has unexplored territory.
         </motion.p>
 
-        {/* CTA */}
-        <motion.div className="mt-6" variants={fadeIn}>
+        {/* CTA — onClickCapture fires before PortalButton's handler */}
+        <motion.div className="mt-6" variants={fadeIn} onClickCapture={handleRupture}>
           <PortalButton />
         </motion.div>
       </motion.div>
+
+      {/* System Rupture overlay — code leakage, DOM debris, memory fragments */}
+      <SystemRupture visible={ruptureVisible} />
     </section>
   );
 }

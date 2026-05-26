@@ -7,6 +7,9 @@ import DimensionalPortal from "./DimensionalPortal";
 import AtmosphericField from "./AtmosphericField";
 import DescentSequence, { type DescentPhase } from "./DescentSequence";
 import { useDimensionStore } from "@/systems/progression/dimensionStore";
+import { useAnomalyEngine } from "@/systems/procedural/anomalyEngine";
+import { useAnomalySpawner, DIMENSION_PROFILES } from "@/systems/procedural/anomalySpawner";
+import AnomalyRenderer from "@/systems/procedural/anomalyRenderer";
 
 /* ── Global pointer tracker ─────────────────────────────── */
 
@@ -38,6 +41,19 @@ function CameraRig({ disabled }: { disabled: boolean }) {
   });
 
   return null;
+}
+
+/* ── Anomaly layer ──────────────────────────────────────── */
+
+function AnomalyLayer() {
+  const anomalies = useAnomalySpawner(DIMENSION_PROFILES.depth);
+  return (
+    <>
+      {anomalies.map((anomaly) => (
+        <AnomalyRenderer key={anomaly.id} anomaly={anomaly} />
+      ))}
+    </>
+  );
 }
 
 /* ── Scene orchestrator — manages descent state ─────────── */
@@ -78,7 +94,6 @@ function SceneOrchestrator() {
 
       setDescentPhase(currentPhase);
 
-      // On arrival, advance to next dimension after a settling delay
       if (currentPhase === "arrival" && !arrivedRef.current) {
         arrivedRef.current = true;
         setTimeout(() => jumpDimension(4), 2200);
@@ -113,8 +128,18 @@ function SceneOrchestrator() {
       <AtmosphericField dimmed={descentPhase === "traverse" || descentPhase === "arrival"} />
 
       <DescentSequence phase={descentPhase} totalElapsed={totalElapsed} />
+
+      {!isDescentActive && <AnomalyLayer />}
     </>
   );
+}
+
+/* ── Dual engine tick ───────────────────────────────────── */
+
+function DualTick() {
+  const anomalyTick = useAnomalyEngine((s) => s.tick);
+  useFrame(() => anomalyTick());
+  return null;
 }
 
 /* ── Scene content ──────────────────────────────────────── */
@@ -124,6 +149,7 @@ function SceneContent() {
     <>
       <color attach="background" args={["#000000"]} />
       <fog attach="fog" args={["#000000", 6, 22]} />
+      <DualTick />
       <SceneOrchestrator />
       <ambientLight intensity={0.02} color="#ffffff" />
     </>
@@ -158,6 +184,14 @@ function HUD() {
 /* ── Depth Scene ────────────────────────────────────────── */
 
 export default function DepthScene() {
+  const activateAnomalies = useAnomalyEngine((s) => s.activate);
+  const deactivateAnomalies = useAnomalyEngine((s) => s.deactivate);
+
+  useEffect(() => {
+    activateAnomalies();
+    return () => deactivateAnomalies();
+  }, [activateAnomalies, deactivateAnomalies]);
+
   return (
     <div className="fixed inset-0 z-0">
       <Canvas
