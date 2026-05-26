@@ -168,7 +168,6 @@ export default function DepthScene() {
           toneMapping: THREE.NoToneMapping,
           outputColorSpace: THREE.SRGBColorSpace,
         }}
-        style={{ cursor: "none" }}
       >
         <Suspense fallback={null}>
           <SceneContent />

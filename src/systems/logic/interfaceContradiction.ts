@@ -53,7 +53,7 @@ export function useInterfaceLabel(
   const full = { ...DEFAULT_CONFIG, ...config };
   const [displayLabel, setDisplayLabel] = useState(realAction);
   const [isContradicted, setIsContradicted] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     const scheduleSwap = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef, useMemo, useEffect } from "react";
+import { Suspense, useRef, useMemo, useEffect, useState, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import ContradictoryNode from "./ContradictoryNode";
@@ -9,6 +9,7 @@ import { useLogicEngine } from "@/systems/logic/logicEngine";
 import type { ContradictoryNodeConfig } from "./ContradictoryNode";
 import { Text } from "@react-three/drei";
 import { useInterfaceLabel } from "@/systems/logic/interfaceContradiction";
+import { useDimensionStore } from "@/systems/progression/dimensionStore";
 
 /* ── Pointer tracking ───────────────────────────────────── */
 
@@ -308,6 +309,81 @@ function LogicTextFragment({
   );
 }
 
+/* ── Logic exit portal — click to advance to D.06 ───────── */
+
+function LogicExitPortal() {
+  const groupRef = useRef<THREE.Group>(null);
+  const matRef = useRef<THREE.MeshBasicMaterial>(null);
+  const ringRef = useRef<THREE.Mesh>(null);
+  const jumpDimension = useDimensionStore((s) => s.jumpDimension);
+  const [hovered, setHovered] = useState(false);
+  const hoveredRef = useRef(false);
+  hoveredRef.current = hovered;
+  const triggeredRef = useRef(false);
+
+  const handleClick = useCallback(() => {
+    if (triggeredRef.current) return;
+    triggeredRef.current = true;
+    setTimeout(() => jumpDimension(6), 1500);
+  }, [jumpDimension]);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current || !matRef.current) return;
+    const t = clock.getElapsedTime();
+    const h = hoveredRef.current;
+    const trg = triggeredRef.current;
+
+    const breathe = Math.sin(t * 0.8) * 0.012;
+    const stutter = Math.random() < 0.005 ? (Math.random() - 0.5) * 0.04 : 0;
+    groupRef.current.scale.setScalar(1 + breathe + stutter);
+    groupRef.current.rotation.z += 0.002;
+
+    if (trg) {
+      matRef.current.opacity = 0.3 + Math.sin(t * 6) * 0.15;
+      groupRef.current.scale.setScalar(1 + breathe + Math.sin(t * 4) * 0.1);
+    } else {
+      matRef.current.opacity = (h ? 0.12 : 0.05) + breathe * 0.3;
+    }
+
+    if (ringRef.current) {
+      const ringMat = ringRef.current.material as THREE.MeshBasicMaterial;
+      ringMat.opacity = trg ? 0.25 : (h ? 0.08 : 0.025);
+      ringRef.current.rotation.z -= 0.004;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0, -3, -1.5]}>
+      <mesh
+        onClick={handleClick}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      >
+        <sphereGeometry args={[0.2, 16, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.06, 12, 12]} />
+        <meshBasicMaterial color="#000000" />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.08, 10, 10]} />
+        <meshBasicMaterial
+          ref={matRef}
+          color="#ffffff"
+          transparent
+          opacity={0.05}
+          wireframe
+        />
+      </mesh>
+      <mesh ref={ringRef} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.15, 0.003, 6, 48]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.025} />
+      </mesh>
+    </group>
+  );
+}
+
 /* ── Scene content ──────────────────────────────────────── */
 
 function SceneContent() {
@@ -351,6 +427,7 @@ function SceneContent() {
       <LogicTypography />
       <LogicParticles />
       <LogicFog />
+      <LogicExitPortal />
 
       <ambientLight intensity={0.012} color="#ffffff" />
     </>
@@ -417,7 +494,6 @@ export default function LogicChamber() {
           toneMapping: THREE.NoToneMapping,
           outputColorSpace: THREE.SRGBColorSpace,
         }}
-        style={{ cursor: "none" }}
       >
         <Suspense fallback={null}>
           <SceneContent />

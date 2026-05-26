@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense, useRef, useMemo, useEffect } from "react";
+import { Suspense, useRef, useMemo, useEffect, useState, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import TemporalObject from "./TemporalObject";
 import TemporalTypography from "./TemporalTypography";
 import { useTemporalEngine } from "@/systems/temporal/temporalEngine";
 import { useTemporalCursor } from "@/systems/temporal/temporalCursor";
+import { useDelayedReaction } from "@/systems/temporal/delayedReaction";
+import { useDimensionStore } from "@/systems/progression/dimensionStore";
 
 /* ── Temporal object configurations ─────────────────────── */
 
@@ -217,6 +219,86 @@ function TemporalTick() {
   return null;
 }
 
+/* ── Temporal exit portal — delayed click advances to D.05 ── */
+
+function TemporalExitPortal() {
+  const groupRef = useRef<THREE.Group>(null);
+  const matRef = useRef<THREE.MeshBasicMaterial>(null);
+  const jumpDimension = useDimensionStore((s) => s.jumpDimension);
+  const [hovering, setHovering] = useState(false);
+
+  const {
+    isReactingRef,
+    clickFiredRef,
+    onHoverStart,
+    onHoverEnd,
+    onClick,
+  } = useDelayedReaction({
+    hoverDelay: 300,
+    leaveDelay: 500,
+    clickDelay: 900,
+    jitterRange: 300,
+  });
+
+  const hoveringRef = useRef(hovering);
+  hoveringRef.current = hovering;
+
+  // Refs for useFrame
+  const reactRef = useRef(false);
+  const clickRef = useRef(false);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current || !matRef.current) return;
+    const t = clock.getElapsedTime();
+    reactRef.current = isReactingRef.current;
+    clickRef.current = clickFiredRef.current;
+
+    // Breathing
+    const breathe = Math.sin(t * 0.5) * 0.015;
+    const base = 0.06;
+    let opacity = base + breathe;
+
+    if (hoveringRef.current) opacity += 0.04;
+    if (reactRef.current) opacity += 0.08;
+    if (clickRef.current) {
+      opacity = 0.4;
+      groupRef.current.scale.setScalar(1.15);
+    } else {
+      groupRef.current.scale.setScalar(1 + breathe);
+    }
+
+    matRef.current.opacity = opacity;
+
+    // Rotation
+    groupRef.current.rotation.x = Math.sin(t * 0.15) * 0.05;
+    groupRef.current.rotation.y += 0.004;
+  });
+
+  const handleClick = useCallback(() => {
+    onClick();
+    // Delayed dimension jump — fires after clickDelay
+    setTimeout(() => jumpDimension(5), 1000);
+  }, [onClick, jumpDimension]);
+
+  return (
+    <group
+      ref={groupRef}
+      position={[0, -3.5, -2]}
+      onClick={handleClick}
+      onPointerEnter={() => { onHoverStart(); setHovering(true); }}
+      onPointerLeave={() => { onHoverEnd(); setHovering(false); }}
+    >
+      <torusGeometry args={[0.4, 0.008, 8, 48]} />
+      <meshBasicMaterial
+        ref={matRef}
+        color="#ffffff"
+        transparent
+        opacity={0.06}
+      />
+    </group>
+  );
+}
+
 /* ── Scene content ──────────────────────────────────────── */
 
 function SceneContent() {
@@ -235,6 +317,7 @@ function SceneContent() {
       <TemporalTypography />
       <TemporalParticles />
       <TemporalFog />
+      <TemporalExitPortal />
 
       <ambientLight intensity={0.015} color="#ffffff" />
     </>
@@ -289,7 +372,6 @@ export default function TemporalChamber() {
           toneMapping: THREE.NoToneMapping,
           outputColorSpace: THREE.SRGBColorSpace,
         }}
-        style={{ cursor: "none" }}
       >
         <Suspense fallback={null}>
           <SceneContent />

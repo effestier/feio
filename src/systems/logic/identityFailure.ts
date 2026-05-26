@@ -36,7 +36,7 @@ export function useIdentityFailure(config: Partial<IdentityFailureConfig> & { ob
   const [duplicateVisible, setDuplicateVisible] = useState(false);
   const [swapped, setSwapped] = useState(false);
 
-  const cycleRef = useRef<ReturnType<typeof setTimeout>>();
+  const cycleRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const driftRafRef = useRef(0);
   const driftStartRef = useRef(0);
 

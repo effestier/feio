@@ -36,7 +36,7 @@ export default function ContradictoryNode({ config }: { config: ContradictoryNod
   const isContradictedRef = useRef(false);
   const pendingInversionRef = useRef(false);
   const clickFlashRef = useRef(false);
-  const restoreTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const restoreTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Interface contradiction
   const { displayLabel, isContradicted } = useInterfaceLabel(config.label, {
