@@ -15,8 +15,7 @@ export default function DimensionRouter() {
   return (
     <>
       {currentDimension === 0 && <SurfaceHero />}
-      {currentDimension === 1 && <SurfaceHero />}
-      {currentDimension >= 2 && currentDimension < 4 && <DepthScene />}
+      {currentDimension >= 1 && currentDimension < 4 && <DepthScene />}
       {currentDimension >= 4 && currentDimension < 5 && <TemporalChamber />}
       {currentDimension >= 5 && currentDimension < 6 && <LogicChamber />}
       {currentDimension >= 6 && currentDimension < 7 && <ObserverChamber />}

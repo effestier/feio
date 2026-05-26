@@ -247,6 +247,7 @@ function SceneContent() {
       {/* Multi-system particle field */}
       <CollapseParticles />
       <CollapseFog />
+      <AnomalyLayer />
 
       <ambientLight intensity={0.01} color="#ffffff" />
     </>
@@ -288,17 +289,21 @@ export default function CollapseChamber() {
   const deactivateCollapse = useCollapseEngine((s) => s.deactivate);
   const activateAwareness = useAwarenessEngine((s) => s.activate);
   const deactivateAwareness = useAwarenessEngine((s) => s.deactivate);
+  const activateAnomalies = useAnomalyEngine((s) => s.activate);
+  const deactivateAnomalies = useAnomalyEngine((s) => s.deactivate);
 
   useBehaviorTracker();
 
   useEffect(() => {
     activateCollapse();
     activateAwareness();
+    activateAnomalies();
     return () => {
       deactivateCollapse();
       deactivateAwareness();
+      deactivateAnomalies();
     };
-  }, [activateCollapse, deactivateCollapse, activateAwareness, deactivateAwareness]);
+  }, [activateCollapse, deactivateCollapse, activateAwareness, deactivateAwareness, activateAnomalies, deactivateAnomalies]);
 
   return (
     <div className="fixed inset-0 z-0">
