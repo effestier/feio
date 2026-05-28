@@ -3,12 +3,19 @@ import Link from "next/link";
 import type { BookDoc } from "@/lib/types";
 import { coverUrl } from "@/lib/openlibrary";
 
-export default function CoverRow({ books, title }: { books: BookDoc[]; title: string }) {
+export default function CoverRow({ books, title, seeAllHref }: { books: BookDoc[]; title: string; seeAllHref?: string }) {
   if (!books.length) return null;
 
   return (
     <section>
-      <h2 className="font-serif text-xl text-charcoal mb-4">{title}</h2>
+      <div className="flex items-baseline justify-between mb-4">
+        <h2 className="font-serif text-xl text-charcoal">{title}</h2>
+        {seeAllHref && (
+          <Link href={seeAllHref} className="text-sm text-burgundy hover:underline">
+            See all →
+          </Link>
+        )}
+      </div>
       <div className="scroll-row flex gap-3 overflow-x-auto pb-2">
         {books.map((book, i) => {
           const href = book.key.replace("/works/", "/book/");

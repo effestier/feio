@@ -21,10 +21,41 @@ async function TrendingSection() {
 async function PopularSection() {
   let popular: BookDoc[] = [];
   try {
-    popular = await getByGenre("fiction", 20);
+    const res = await getByGenre("fiction", 20);
+    popular = res.books;
   } catch {}
   if (!popular.length) return null;
-  return <CoverRow books={popular} title="Popular" />;
+  return <CoverRow books={popular} title="Popular" seeAllHref="/browse/fiction" />;
+}
+
+async function SpiritualitySection() {
+  let books: BookDoc[] = [];
+  try {
+    const res = await getByGenre("spirituality", 20);
+    books = res.books;
+  } catch {}
+  if (!books.length) return null;
+  return <CoverRow books={books} title="Spirituality & Sacred Texts" seeAllHref="/browse/spirituality" />;
+}
+
+async function ScienceSection() {
+  let books: BookDoc[] = [];
+  try {
+    const res = await getByGenre("science", 20);
+    books = res.books;
+  } catch {}
+  if (!books.length) return null;
+  return <CoverRow books={books} title="Science" seeAllHref="/browse/science" />;
+}
+
+async function PhilosophySection() {
+  let books: BookDoc[] = [];
+  try {
+    const res = await getByGenre("philosophy", 20);
+    books = res.books;
+  } catch {}
+  if (!books.length) return null;
+  return <CoverRow books={books} title="Philosophy" seeAllHref="/browse/philosophy" />;
 }
 
 function CoverRowSkeleton({ title }: { title: string }) {
@@ -62,11 +93,12 @@ export default function Home() {
         <div className="max-w-xl mx-auto">
           <SearchBar large />
         </div>
-        <div className="flex items-center justify-center gap-4 mt-6 text-sm text-muted/60">
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-sm text-muted/60">
           <span>Try</span>
+          <Link href="/search?q=bhagavad+gita" className="text-burgundy hover:underline">Bhagavad Gita</Link>
+          <Link href="/search?q=upanishads" className="text-burgundy hover:underline">Upanishads</Link>
           <Link href="/search?q=dune" className="text-burgundy hover:underline">dune</Link>
           <Link href="/search?q=tolstoy" className="text-burgundy hover:underline">tolstoy</Link>
-          <Link href="/search?q=quantum+physics" className="text-burgundy hover:underline">quantum physics</Link>
         </div>
       </section>
 
@@ -87,6 +119,27 @@ export default function Home() {
       <div className="mb-14">
         <Suspense fallback={<CoverRowSkeleton title="Popular" />}>
           <PopularSection />
+        </Suspense>
+      </div>
+
+      {/* Spirituality */}
+      <div className="mb-14">
+        <Suspense fallback={<CoverRowSkeleton title="Spirituality & Sacred Texts" />}>
+          <SpiritualitySection />
+        </Suspense>
+      </div>
+
+      {/* Science */}
+      <div className="mb-14">
+        <Suspense fallback={<CoverRowSkeleton title="Science" />}>
+          <ScienceSection />
+        </Suspense>
+      </div>
+
+      {/* Philosophy */}
+      <div className="mb-14">
+        <Suspense fallback={<CoverRowSkeleton title="Philosophy" />}>
+          <PhilosophySection />
         </Suspense>
       </div>
 

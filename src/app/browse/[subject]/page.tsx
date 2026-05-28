@@ -1,6 +1,6 @@
 import { getByGenre } from "@/lib/openlibrary";
 import type { BookDoc } from "@/lib/types";
-import BookGrid from "@/components/BookGrid";
+import BookGridLoadable from "@/components/BookGridLoadable";
 import Link from "next/link";
 import { GENRES } from "@/lib/types";
 
@@ -18,7 +18,8 @@ export default async function BrowsePage({
   let books: BookDoc[] = [];
 
   try {
-    books = await getByGenre(decoded, 20);
+    const result = await getByGenre(decoded, 40);
+    books = result.books;
   } catch {
     // API error
   }
@@ -50,7 +51,7 @@ export default async function BrowsePage({
         </p>
       </div>
 
-      <BookGrid books={books} />
+      <BookGridLoadable initialBooks={books} genre={decoded} />
     </div>
   );
 }

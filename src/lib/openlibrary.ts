@@ -79,11 +79,13 @@ export async function searchBySubject(query: string, page = 1, limit = 20): Prom
  * Searches multiple genre-specific keywords in parallel, merges and deduplicates.
  * Returns books WITH covers first, then those without.
  */
-export async function getByGenre(genreSlug: string, limit = 20): Promise<BookDoc[]> {
+export async function getByGenre(genreSlug: string, limit = 20, offset = 0): Promise<{ books: BookDoc[]; hasMore: boolean }> {
   const keywords = GENRE_SEARCH_TERMS[genreSlug];
-  if (!keywords || keywords.length === 0) return [];
+  if (!keywords || keywords.length === 0) return { books: [], hasMore: false };
 
-  const perKeyword = Math.ceil(limit / keywords.length) + 3;
+  // Fetch enough to cover offset + limit + buffer for dedup
+  const totalNeeded = offset + limit + 10;
+  const perKeyword = Math.ceil(totalNeeded / keywords.length) + 3;
 
   // Fire all keyword searches in parallel
   const results = await Promise.allSettled(
@@ -112,5 +114,9 @@ export async function getByGenre(genreSlug: string, limit = 20): Promise<BookDoc
   // Prefer books with covers
   const withCover = merged.filter((b) => b.cover_i);
   const withoutCover = merged.filter((b) => !b.cover_i);
-  return [...withCover, ...withoutCover].slice(0, limit);
+  const sorted = [...withCover, ...withoutCover];
+
+  const books = sorted.slice(offset, offset + limit);
+  const hasMore = sorted.length > offset + limit;
+  return { books, hasMore };
 }

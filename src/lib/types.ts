@@ -85,7 +85,9 @@ export const GENRE_SEARCH_TERMS: Record<string, string[]> = {
   adventure: ["adventure", "exploration", "survival", "pirate", "treasure", "voyage"],
   children: ["children", "juvenile", "fairy tale", "picture book", "young adult"],
   humor: ["humor", "comedy", "satire", "parody", "wit"],
-  religion: ["religion", "theology", "spiritual", "christianity", "islam", "buddhism", "bible"],
+  religion: ["religion", "theology", "spiritual", "christianity", "islam", "buddhism", "bible", "quran", "torah", "sutra"],
+  spirituality: ["bhagavad gita", "upanishads", "vedas", "rigveda", "samaveda", "yajurveda", "atharvaveda", "bhagavata purana", "ramayana", "mahabharata", "vedanta", "yoga sutras", "patanjali", "vedic", "hinduism", "hindu scripture", "sanskrit literature", "indian philosophy", "meditation", "karma", "dharma", "moksha", "atman", "brahman", "advaita", "tantra", "mantra", "ayurveda"],
+  manuscripts: ["manuscripts", "ancient texts", "sacred texts", "illuminated manuscripts", "palm leaf manuscript", "scroll", "codex", "ancient literature", "dead sea scrolls", "papyrus"],
   politics: ["politics", "government", "democracy", "election", "policy", "diplomacy"],
 };
 
@@ -107,5 +109,7 @@ export const GENRES = [
   { slug: "children", label: "Children", emoji: "🧸" },
   { slug: "humor", label: "Humor", emoji: "😄" },
   { slug: "religion", label: "Religion", emoji: "✝️" },
+  { slug: "spirituality", label: "Spirituality", emoji: "🕉️" },
+  { slug: "manuscripts", label: "Manuscripts", emoji: "📜" },
   { slug: "politics", label: "Politics", emoji: "🏛️" },
 ] as const;
