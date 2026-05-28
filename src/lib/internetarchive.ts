@@ -125,6 +125,18 @@ export function getIAReadUrl(meta: IAMetadata): string | null {
 }
 
 /**
+ * Check if an IA item has readable text (HTML or Plain Text).
+ */
+export function hasIAReadableText(meta: IAMetadata): boolean {
+  return meta.files.some(
+    (f) =>
+      f.format === "HTML" ||
+      f.format === "Plain Text" ||
+      f.format === "DjVuTXT"
+  );
+}
+
+/**
  * Get downloadable formats from IA metadata.
  */
 export function getIADownloadFormats(meta: IAMetadata): { format: string; label: string; url: string }[] {

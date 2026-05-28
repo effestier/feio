@@ -1,6 +1,6 @@
 import { getBookDetail, searchBySubject, coverUrl } from "@/lib/openlibrary";
 import { findGutenbergMatch, getReadUrl, getDownloadFormats } from "@/lib/gutenberg";
-import { searchIA, getIAMetadata, getIAUrl, getIAReadUrl, getIADownloadFormats } from "@/lib/internetarchive";
+import { searchIA, getIAMetadata, getIAUrl, getIAReadUrl, getIADownloadFormats, hasIAReadableText } from "@/lib/internetarchive";
 import { searchSE } from "@/lib/standardebooks";
 import type { BookDoc } from "@/lib/types";
 import BookGrid from "@/components/BookGrid";
@@ -76,6 +76,7 @@ export default async function BookPage({
   } catch {}
 
   // Build actions list
+  const iaHasText = iaMeta ? hasIAReadableText(iaMeta) : false;
   const iaReadUrl = iaMeta ? getIAReadUrl(iaMeta) : null;
   const iaDownloads = iaMeta ? getIADownloadFormats(iaMeta) : [];
   const iaUrl = iaBook ? getIAUrl(iaBook.identifier) : null;
@@ -150,43 +151,39 @@ export default async function BookPage({
                 </div>
               )}
 
-              {/* Internet Archive — read */}
-              {!gutenbergId && iaReadUrl && (
-                <a
-                  href={iaReadUrl}
-                  target="_blank"
-                  rel="noopener"
+              {/* Internet Archive — read on FEIO (when text available) */}
+              {!gutenbergId && iaHasText && iaBook && (
+                <Link
+                  href={`/read/ia/${iaBook.identifier}`}
                   className="flex items-center justify-center gap-2 w-full py-3 bg-burgundy text-white rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
-                  Read on Internet Archive
-                </a>
+                  Read on FEIO
+                </Link>
               )}
 
-              {/* Internet Archive — downloads */}
-              {!gutenbergId && iaDownloads.length > 0 && (
+              {/* Internet Archive — downloads (proxied through FEIO) */}
+              {!gutenbergId && iaBook && iaDownloads.length > 0 && (
                 <div>
                   <p className="text-xs text-muted mb-2 uppercase tracking-wider">Download</p>
                   <div className="flex flex-wrap gap-2">
-                    {iaDownloads.map(({ format, label, url }) => (
+                    {iaDownloads.map(({ format }) => (
                       <a
                         key={format}
-                        href={url}
-                        target="_blank"
-                        rel="noopener"
+                        href={`/api/ia/${iaBook.identifier}/download?format=${format}`}
                         className="px-3 py-1.5 text-xs font-medium bg-white border border-charcoal/15 rounded-md hover:border-burgundy hover:text-burgundy transition-colors tracking-wider"
                       >
-                        {label}
+                        {format.toUpperCase()}
                       </a>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Internet Archive — link (when no direct read) */}
-              {!gutenbergId && !iaReadUrl && iaUrl && (
+              {/* Internet Archive — link (when no readable text format) */}
+              {!gutenbergId && !iaHasText && iaUrl && (
                 <a
                   href={iaUrl}
                   target="_blank"

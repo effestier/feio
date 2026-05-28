@@ -5,15 +5,21 @@ import Link from "next/link";
 import ReaderSettings from "@/components/ReaderSettings";
 
 export default function ReadPageContent({
-  bookId,
   title,
   authors,
   readUrl,
+  downloadPdfUrl,
+  downloadTxtUrl,
+  detailsUrl,
+  detailsLabel,
 }: {
-  bookId: number;
   title: string;
   authors: string;
   readUrl: string;
+  downloadPdfUrl: string;
+  downloadTxtUrl: string;
+  detailsUrl?: string;
+  detailsLabel?: string;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -30,24 +36,28 @@ export default function ReadPageContent({
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-3">
             <a
-              href={`/api/book/${bookId}/download?format=pdf`}
+              href={downloadPdfUrl}
               className="px-2 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider bg-white border border-charcoal/10 rounded hover:border-burgundy hover:text-burgundy transition-colors"
             >
               PDF
             </a>
             <a
-              href={`/api/book/${bookId}/download?format=txt`}
+              href={downloadTxtUrl}
               className="px-2 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider bg-white border border-charcoal/10 rounded hover:border-burgundy hover:text-burgundy transition-colors"
             >
               TXT
             </a>
-            <span className="w-px h-6 bg-charcoal/10 mx-0.5 sm:mx-1 hidden sm:block" />
-            <Link
-              href={`/book/${bookId}`}
-              className="px-2 sm:px-3 py-1.5 text-xs text-muted hover:text-charcoal transition-colors hidden sm:block"
-            >
-              Details
-            </Link>
+            {detailsUrl && (
+              <>
+                <span className="w-px h-6 bg-charcoal/10 mx-0.5 sm:mx-1 hidden sm:block" />
+                <Link
+                  href={detailsUrl}
+                  className="px-2 sm:px-3 py-1.5 text-xs text-muted hover:text-charcoal transition-colors hidden sm:block"
+                >
+                  {detailsLabel || "Details"}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -20,15 +20,16 @@ export default async function ReadPage({
     notFound();
   }
 
-  const readUrl = `/api/book/${bookId}/read`;
   const authors = book.authors.map((a) => a.name).join(", ") || "Unknown";
 
   return (
     <ReadPageContent
-      bookId={bookId}
       title={book.title}
       authors={authors}
-      readUrl={readUrl}
+      readUrl={`/api/book/${bookId}/read`}
+      downloadPdfUrl={`/api/book/${bookId}/download?format=pdf`}
+      downloadTxtUrl={`/api/book/${bookId}/download?format=txt`}
+      detailsUrl={`/book/${bookId}`}
     />
   );
 }
