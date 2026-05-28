@@ -38,7 +38,7 @@ export interface IAFile {
  */
 export async function searchIA(query: string, limit = 10): Promise<IABook[]> {
   const params = new URLSearchParams({
-    q: `${query} AND mediatype:texts AND language:eng`,
+    q: `${query} AND mediatype:texts AND language:eng AND -collection:inlibrary AND -collection:printdisabled`,
     "fl[]": "identifier,title,creator,subject,downloads",
     "sort[]": "downloads desc",
     rows: String(limit),
@@ -66,7 +66,7 @@ export async function searchIA(query: string, limit = 10): Promise<IABook[]> {
  */
 export async function searchIABySubject(subject: string, limit = 10): Promise<IABook[]> {
   const params = new URLSearchParams({
-    q: `subject:${subject} AND mediatype:texts AND language:eng AND format:EPUB`,
+    q: `subject:${subject} AND mediatype:texts AND language:eng AND format:EPUB AND -collection:inlibrary AND -collection:printdisabled`,
     "fl[]": "identifier,title,creator,subject,downloads",
     "sort[]": "downloads desc",
     rows: String(limit),
@@ -119,17 +119,9 @@ export function getIAUrl(identifier: string): string {
  * Find readable formats (HTML, text) from IA metadata.
  */
 export function getIAReadUrl(meta: IAMetadata): string | null {
-  const html = meta.files.find(
-    (f) => f.format === "HTML" || f.format === "DjVu"
-  );
-  if (html) return `https://archive.org/download/${meta.metadata.identifier}/${html.name}`;
-
-  const txt = meta.files.find(
-    (f) => f.format === "Plain Text" || f.format === "DjVuTXT"
-  );
-  if (txt) return `https://archive.org/download/${meta.metadata.identifier}/${txt.name}`;
-
-  return null;
+  const id = meta.metadata.identifier;
+  // Use the BookReader (stream) URL — renders in-browser, no auth needed for public items
+  return `https://archive.org/details/${id}`;
 }
 
 /**
