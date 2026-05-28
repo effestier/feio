@@ -6,6 +6,16 @@ import { addUpload } from "@/lib/uploads";
 
 export async function POST(req: NextRequest) {
   try {
+    // Auth check — require upload key from header or form field
+    const uploadKey = process.env.UPLOAD_KEY;
+    if (uploadKey) {
+      const headerKey = req.headers.get("x-upload-key");
+      const formKey = (await req.clone().formData()).get("key") as string | null;
+      if (headerKey !== uploadKey && formKey !== uploadKey) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
+
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const title = sanitize(formData.get("title") as string) || "Untitled";
