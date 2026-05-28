@@ -58,6 +58,16 @@ async function PhilosophySection() {
   return <CoverRow books={books} title="Philosophy" seeAllHref="/browse/philosophy" />;
 }
 
+async function ReligionSection() {
+  let books: BookDoc[] = [];
+  try {
+    const res = await getByGenre("religion", 20);
+    books = res.books;
+  } catch {}
+  if (!books.length) return null;
+  return <CoverRow books={books} title="Religion & Faiths" seeAllHref="/browse/religion" />;
+}
+
 function CoverRowSkeleton({ title }: { title: string }) {
   return (
     <div>
@@ -126,6 +136,13 @@ export default function Home() {
       <div className="mb-14">
         <Suspense fallback={<CoverRowSkeleton title="Spirituality & Sacred Texts" />}>
           <SpiritualitySection />
+        </Suspense>
+      </div>
+
+      {/* Religion */}
+      <div className="mb-14">
+        <Suspense fallback={<CoverRowSkeleton title="Religion & Faiths" />}>
+          <ReligionSection />
         </Suspense>
       </div>
 
