@@ -12,7 +12,7 @@ async function TrendingSection() {
   let trending: BookDoc[] = [];
   try {
     const res = await getTrending();
-    trending = res.docs;
+    trending = res.docs.filter((b) => b.cover_i);
   } catch {}
   if (!trending.length) return null;
   return <CoverRow books={trending} title="Trending Today" />;
@@ -21,7 +21,7 @@ async function TrendingSection() {
 async function PopularSection() {
   let popular: BookDoc[] = [];
   try {
-    const res = await getByGenre("fiction", 20);
+    const res = await getByGenre("fiction", 20, 0, true);
     popular = res.books;
   } catch {}
   if (!popular.length) return null;
@@ -31,7 +31,7 @@ async function PopularSection() {
 async function SpiritualitySection() {
   let books: BookDoc[] = [];
   try {
-    const res = await getByGenre("spirituality", 20);
+    const res = await getByGenre("spirituality", 20, 0, true);
     books = res.books;
   } catch {}
   if (!books.length) return null;
@@ -41,7 +41,7 @@ async function SpiritualitySection() {
 async function ScienceSection() {
   let books: BookDoc[] = [];
   try {
-    const res = await getByGenre("science", 20);
+    const res = await getByGenre("science", 20, 0, true);
     books = res.books;
   } catch {}
   if (!books.length) return null;
@@ -51,7 +51,7 @@ async function ScienceSection() {
 async function PhilosophySection() {
   let books: BookDoc[] = [];
   try {
-    const res = await getByGenre("philosophy", 20);
+    const res = await getByGenre("philosophy", 20, 0, true);
     books = res.books;
   } catch {}
   if (!books.length) return null;
@@ -61,7 +61,7 @@ async function PhilosophySection() {
 async function ReligionSection() {
   let books: BookDoc[] = [];
   try {
-    const res = await getByGenre("religion", 20);
+    const res = await getByGenre("religion", 20, 0, true);
     books = res.books;
   } catch {}
   if (!books.length) return null;

@@ -113,7 +113,7 @@ export async function getByGenre(genreSlug: string, limit = 20, offset = 0, cove
   // Strongly prefer books with covers — put them first
   const withCover = merged.filter((b) => b.cover_i);
   const withoutCover = merged.filter((b) => !b.cover_i);
-  const sorted = [...withCover, ...withoutCover];
+  const sorted = coversOnly ? withCover : [...withCover, ...withoutCover];
 
   const books = sorted.slice(offset, offset + limit);
   const hasMore = sorted.length > offset + limit;
