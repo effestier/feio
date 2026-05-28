@@ -20,7 +20,7 @@ export default async function LibraryPage() {
         </div>
         <Link
           href="/upload"
-          className="px-5 py-2.5 bg-burgundy text-white rounded-lg text-sm font-medium hover:bg-burgundy-light transition-colors"
+          className="px-5 py-2.5 bg-gold text-cream rounded-lg text-sm font-medium hover:bg-burgundy-light transition-colors"
         >
           Upload a Book
         </Link>
@@ -40,7 +40,7 @@ export default async function LibraryPage() {
             return (
               <div
                 key={book.id}
-                className="flex items-start gap-5 p-5 bg-white border border-charcoal/8 rounded-xl hover:border-burgundy/20 hover:shadow-sm transition-all"
+                className="flex items-start gap-5 p-5 bg-paper border border-charcoal/8 rounded-xl hover:border-gold/20 hover:shadow-sm transition-all"
               >
                 {/* Icon */}
                 <div className="flex-shrink-0 w-12 h-16 bg-cream-dark rounded flex items-center justify-center">
@@ -74,7 +74,7 @@ export default async function LibraryPage() {
                 {/* Download */}
                 <a
                   href={`/api/uploads/${book.id}/download`}
-                  className="flex-shrink-0 px-4 py-2 text-xs font-medium bg-charcoal text-white rounded-md hover:bg-charcoal-light transition-colors"
+                  className="flex-shrink-0 px-4 py-2 text-xs font-medium bg-gold text-cream rounded-md hover:bg-burgundy-light transition-colors"
                 >
                   Download
                 </a>
@@ -103,7 +103,7 @@ export default async function LibraryPage() {
           </p>
           <Link
             href="/upload"
-            className="inline-block mt-4 px-5 py-2.5 bg-burgundy text-white rounded-lg text-sm font-medium hover:bg-burgundy-light transition-colors"
+            className="inline-block mt-4 px-5 py-2.5 bg-gold text-cream rounded-lg text-sm font-medium hover:bg-burgundy-light transition-colors"
           >
             Upload Your First Book
           </Link>

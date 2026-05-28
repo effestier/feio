@@ -8,7 +8,7 @@ export default function GenreGrid() {
         <Link
           key={genre.slug}
           href={`/browse/${genre.slug}`}
-          className="genre-card bg-white border border-charcoal/10 rounded-lg p-4 flex items-center gap-3"
+          className="genre-card bg-paper border border-charcoal/10 rounded-lg p-4 flex items-center gap-3"
         >
           <span className="text-xl">{genre.emoji}</span>
           <span className="text-sm font-medium text-charcoal">{genre.label}</span>

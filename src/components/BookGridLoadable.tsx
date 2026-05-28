@@ -42,7 +42,7 @@ export default function BookGridLoadable({
           <button
             onClick={loadMore}
             disabled={loading}
-            className="px-6 py-2.5 bg-charcoal text-white text-sm rounded-lg hover:bg-charcoal/80 transition-colors disabled:opacity-50"
+            className="px-6 py-2.5 bg-gold text-cream text-sm rounded-lg hover:bg-burgundy-light transition-colors disabled:opacity-50"
           >
             {loading ? "Loading..." : "Load more"}
           </button>

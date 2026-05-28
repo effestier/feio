@@ -26,7 +26,7 @@ export default function BookCard({ book, priority = false }: { book: BookDoc; pr
           </div>
         )}
       </div>
-      <h3 className="text-sm font-medium text-charcoal leading-tight line-clamp-2 group-hover:text-burgundy transition-colors">
+      <h3 className="text-sm font-medium text-charcoal leading-tight line-clamp-2 group-hover:text-gold transition-colors">
         {book.title}
       </h3>
       {book.author_name && (

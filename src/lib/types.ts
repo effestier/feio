@@ -108,7 +108,7 @@ export const GENRES = [
   { slug: "self_help", label: "Self-Help", emoji: "💡" },
   { slug: "children", label: "Children", emoji: "🧸" },
   { slug: "humor", label: "Humor", emoji: "😄" },
-  { slug: "religion", label: "Religion", emoji: "✝️" },
+  { slug: "religion", label: "Religion", emoji: "🙏" },
   { slug: "spirituality", label: "Spirituality", emoji: "🕉️" },
   { slug: "manuscripts", label: "Manuscripts", emoji: "📜" },
   { slug: "politics", label: "Politics", emoji: "🏛️" },

@@ -12,7 +12,7 @@ interface ReaderPrefs {
 const DEFAULT_PREFS: ReaderPrefs = {
   fontSize: 18,
   fontFamily: "serif",
-  theme: "light",
+  theme: "dark",
   lineHeight: 1.85,
 };
 
@@ -81,7 +81,7 @@ export default function ReaderSettings({ iframeRef }: { iframeRef: React.RefObje
       {/* Floating gear button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white shadow-lg border border-charcoal/10 flex items-center justify-center text-muted hover:text-charcoal hover:shadow-xl transition-all"
+        className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-paper shadow-lg border border-charcoal/10 flex items-center justify-center text-muted hover:text-charcoal hover:shadow-xl transition-all"
         aria-label="Reader settings"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -94,7 +94,7 @@ export default function ReaderSettings({ iframeRef }: { iframeRef: React.RefObje
       {open && (
         <div
           ref={panelRef}
-          className="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-72 bg-white rounded-xl shadow-2xl border border-charcoal/10 p-4 sm:p-5 space-y-4 sm:space-y-5 max-h-[70vh] overflow-y-auto"
+          className="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-72 bg-paper rounded-xl shadow-2xl border border-charcoal/10 p-4 sm:p-5 space-y-4 sm:space-y-5 max-h-[70vh] overflow-y-auto"
         >
           <p className="text-xs font-medium uppercase tracking-widest text-muted">Reading Preferences</p>
 
@@ -111,7 +111,7 @@ export default function ReaderSettings({ iframeRef }: { iframeRef: React.RefObje
               step={1}
               value={prefs.fontSize}
               onChange={(e) => update({ fontSize: Number(e.target.value) })}
-              className="w-full h-1.5 bg-cream-dark rounded-full appearance-none cursor-pointer accent-burgundy"
+              className="w-full h-1.5 bg-cream-dark rounded-full appearance-none cursor-pointer accent-gold"
             />
           </div>
 
@@ -128,7 +128,7 @@ export default function ReaderSettings({ iframeRef }: { iframeRef: React.RefObje
                   onClick={() => update({ fontFamily: f.key })}
                   className={`flex-1 py-2 rounded-lg text-center transition-colors ${
                     prefs.fontFamily === f.key
-                      ? "bg-charcoal text-white"
+                      ? "bg-cream-dark text-charcoal"
                       : "bg-cream-dark text-charcoal hover:bg-cream"
                   }`}
                 >
@@ -151,7 +151,7 @@ export default function ReaderSettings({ iframeRef }: { iframeRef: React.RefObje
                   onClick={() => update({ theme: t.key })}
                   className={`flex-1 py-2 rounded-lg text-center border-2 transition-all ${
                     prefs.theme === t.key
-                      ? "border-burgundy scale-105"
+                      ? "border-gold scale-105"
                       : "border-transparent hover:scale-105"
                   }`}
                   style={{ backgroundColor: t.bg, color: t.color }}
@@ -177,7 +177,7 @@ export default function ReaderSettings({ iframeRef }: { iframeRef: React.RefObje
                   onClick={() => update({ lineHeight: s.key })}
                   className={`flex-1 py-1.5 rounded-lg text-xs transition-colors ${
                     prefs.lineHeight === s.key
-                      ? "bg-charcoal text-white"
+                      ? "bg-cream-dark text-charcoal"
                       : "bg-cream-dark text-charcoal hover:bg-cream"
                   }`}
                 >

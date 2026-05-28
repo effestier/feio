@@ -70,7 +70,7 @@ export default async function SearchPage({
           {page > 1 && (
             <Link
               href={`/search?q=${encodeURIComponent(query)}&page=${page - 1}`}
-              className="px-3 py-1.5 text-sm border border-charcoal/15 rounded-md hover:bg-white transition-colors"
+              className="px-3 py-1.5 text-sm border border-charcoal/15 rounded-md hover:bg-paper transition-colors"
             >
               Previous
             </Link>
@@ -81,7 +81,7 @@ export default async function SearchPage({
           {page < totalPages && (
             <Link
               href={`/search?q=${encodeURIComponent(query)}&page=${page + 1}`}
-              className="px-3 py-1.5 text-sm border border-charcoal/15 rounded-md hover:bg-white transition-colors"
+              className="px-3 py-1.5 text-sm border border-charcoal/15 rounded-md hover:bg-paper transition-colors"
             >
               Next
             </Link>

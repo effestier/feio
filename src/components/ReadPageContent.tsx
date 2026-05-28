@@ -37,13 +37,13 @@ export default function ReadPageContent({
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-3">
             <a
               href={downloadPdfUrl}
-              className="px-2 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider bg-white border border-charcoal/10 rounded hover:border-burgundy hover:text-burgundy transition-colors"
+              className="px-2 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider bg-paper border border-charcoal/10 rounded hover:border-gold hover:text-gold transition-colors"
             >
               PDF
             </a>
             <a
               href={downloadTxtUrl}
-              className="px-2 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider bg-white border border-charcoal/10 rounded hover:border-burgundy hover:text-burgundy transition-colors"
+              className="px-2 sm:px-3 py-1.5 text-[10px] sm:text-[11px] font-medium uppercase tracking-wider bg-paper border border-charcoal/10 rounded hover:border-gold hover:text-gold transition-colors"
             >
               TXT
             </a>
@@ -74,7 +74,7 @@ export default function ReadPageContent({
       {/* Footer */}
       <div className="text-center py-6 text-xs text-muted/50">
         Read on{" "}
-        <Link href="/" className="text-burgundy hover:underline">
+        <Link href="/" className="text-gold hover:underline">
           FEIO
         </Link>
       </div>

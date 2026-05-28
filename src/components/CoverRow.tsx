@@ -11,7 +11,7 @@ export default function CoverRow({ books, title, seeAllHref }: { books: BookDoc[
       <div className="flex items-baseline justify-between mb-4">
         <h2 className="font-serif text-xl text-charcoal">{title}</h2>
         {seeAllHref && (
-          <Link href={seeAllHref} className="text-sm text-burgundy hover:underline">
+          <Link href={seeAllHref} className="text-sm text-gold hover:underline">
             See all →
           </Link>
         )}

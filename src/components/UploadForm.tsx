@@ -64,8 +64,8 @@ export default function UploadForm() {
         <div
           className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
             file
-              ? "border-burgundy/40 bg-burgundy/5"
-              : "border-charcoal/15 hover:border-burgundy/30 bg-white"
+              ? "border-gold/40 bg-gold/5"
+              : "border-charcoal/15 hover:border-gold/30 bg-paper"
           }`}
           onClick={() => fileRef.current?.click()}
         >
@@ -89,7 +89,7 @@ export default function UploadForm() {
                   setFile(null);
                   if (fileRef.current) fileRef.current.value = "";
                 }}
-                className="text-xs text-burgundy mt-2 hover:underline"
+                className="text-xs text-gold mt-2 hover:underline"
               >
                 Remove
               </button>
@@ -110,7 +110,7 @@ export default function UploadForm() {
                 />
               </svg>
               <p className="text-sm text-muted">
-                Drop a file here, or <span className="text-burgundy font-medium">browse</span>
+                Drop a file here, or <span className="text-gold font-medium">browse</span>
               </p>
               <p className="text-xs text-muted/60 mt-1">
                 PDF, EPUB, TXT, MOBI &middot; Max 50MB
@@ -130,7 +130,7 @@ export default function UploadForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Book title"
-          className="w-full bg-white border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-burgundy focus:ring-0 transition-colors"
+          className="w-full bg-paper border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-gold focus:ring-0 transition-colors"
         />
       </div>
 
@@ -144,7 +144,7 @@ export default function UploadForm() {
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
           placeholder="Author name"
-          className="w-full bg-white border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-burgundy focus:ring-0 transition-colors"
+          className="w-full bg-paper border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-gold focus:ring-0 transition-colors"
         />
       </div>
 
@@ -159,7 +159,7 @@ export default function UploadForm() {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Brief description..."
           rows={3}
-          className="w-full bg-white border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-burgundy focus:ring-0 transition-colors resize-none"
+          className="w-full bg-paper border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-gold focus:ring-0 transition-colors resize-none"
         />
       </div>
 
@@ -173,7 +173,7 @@ export default function UploadForm() {
           value={key}
           onChange={(e) => setKey(e.target.value)}
           placeholder="Enter upload key"
-          className="w-full bg-white border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-burgundy focus:ring-0 transition-colors"
+          className="w-full bg-paper border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-gold focus:ring-0 transition-colors"
         />
         <p className="text-xs text-muted/60 mt-1">Required to prevent unauthorized uploads</p>
       </div>
@@ -182,7 +182,7 @@ export default function UploadForm() {
       <button
         type="submit"
         disabled={!file || uploading}
-        className="w-full py-3 bg-burgundy text-white rounded-lg font-medium text-sm hover:bg-burgundy-light disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        className="w-full py-3 bg-gold text-cream rounded-lg font-medium text-sm hover:bg-burgundy-light disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         {uploading ? "Uploading..." : "Upload Book"}
       </button>

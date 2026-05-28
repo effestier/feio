@@ -2,8 +2,11 @@ import { Suspense } from "react";
 import SearchBar from "@/components/SearchBar";
 import CoverRow from "@/components/CoverRow";
 import GenreGrid from "@/components/GenreGrid";
+import DailyVerse from "@/components/DailyVerse";
 import Link from "next/link";
 import { getTrending, getByGenre } from "@/lib/openlibrary";
+import { SACRED_TEXTS } from "@/lib/sacred-texts";
+import { SPIRITUAL_TEACHINGS, HERITAGE_SITES } from "@/lib/spiritual-content";
 import type { BookDoc } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -75,9 +78,9 @@ function CoverRowSkeleton({ title }: { title: string }) {
       <div className="flex gap-3 overflow-hidden">
         {Array.from({ length: 7 }).map((_, i) => (
           <div key={i} className="flex-shrink-0 w-[120px] sm:w-[140px]">
-            <div className="aspect-[2/3] bg-cream-dark rounded-md animate-pulse" />
-            <div className="h-3 bg-cream-dark rounded mt-1.5 animate-pulse w-3/4" />
-            <div className="h-2 bg-cream-dark rounded mt-1 animate-pulse w-1/2" />
+            <div className="aspect-[2/3] bg-paper rounded-md animate-pulse" />
+            <div className="h-3 bg-paper rounded mt-1.5 animate-pulse w-3/4" />
+            <div className="h-2 bg-paper rounded mt-1 animate-pulse w-1/2" />
           </div>
         ))}
       </div>
@@ -90,7 +93,7 @@ export default function Home() {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Hero */}
       <section className="text-center py-16 sm:py-24">
-        <div className="inline-block px-3 py-1 mb-6 text-xs font-medium uppercase tracking-widest text-burgundy bg-burgundy/8 rounded-full">
+        <div className="inline-block px-3 py-1 mb-6 text-xs font-medium uppercase tracking-widest text-gold bg-gold/10 rounded-full border border-gold/20">
           Free &amp; Open Digital Library
         </div>
         <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl text-charcoal mb-4 tracking-tight leading-none">
@@ -105,10 +108,15 @@ export default function Home() {
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-sm text-muted/60">
           <span>Try</span>
-          <Link href="/search?q=bhagavad+gita" className="text-burgundy hover:underline">Bhagavad Gita</Link>
-          <Link href="/search?q=upanishads" className="text-burgundy hover:underline">Upanishads</Link>
-          <Link href="/search?q=dune" className="text-burgundy hover:underline">dune</Link>
-          <Link href="/search?q=tolstoy" className="text-burgundy hover:underline">tolstoy</Link>
+          <Link href="/search?q=bhagavad+gita" className="text-gold hover:underline">Bhagavad Gita</Link>
+          <Link href="/search?q=upanishads" className="text-gold hover:underline">Upanishads</Link>
+          <Link href="/search?q=dune" className="text-gold hover:underline">dune</Link>
+          <Link href="/search?q=tolstoy" className="text-gold hover:underline">tolstoy</Link>
+        </div>
+
+        {/* Daily Verse */}
+        <div className="max-w-2xl mx-auto mt-10">
+          <DailyVerse />
         </div>
       </section>
 
@@ -119,11 +127,38 @@ export default function Home() {
         </Suspense>
       </div>
 
-      {/* Genres */}
+      {/* Sacred Texts */}
       <section className="mb-14">
-        <h2 className="font-serif text-xl text-charcoal mb-4">Browse by Genre</h2>
-        <GenreGrid />
+        <div className="flex items-baseline justify-between mb-5">
+          <h2 className="font-serif text-xl text-charcoal">Sacred Texts</h2>
+          <Link href="/scriptures" className="text-sm text-gold hover:underline">
+            Explore all →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {SACRED_TEXTS.slice(0, 4).map((text) => (
+            <Link
+              key={text.id}
+              href={`/scriptures/${text.id}`}
+              className="bg-paper border border-gold/10 rounded-xl p-5 flex flex-col gap-3 hover:border-gold/30 transition-colors group"
+            >
+              <span className="text-3xl">{text.icon}</span>
+              <div>
+                <p className="text-sm font-medium text-charcoal group-hover:text-gold transition-colors leading-tight">{text.title}</p>
+                <p className="text-xs text-muted mt-1 line-clamp-2">{text.description}</p>
+              </div>
+              <span className="text-[11px] text-gold/60 mt-auto">{text.traditionLabel}</span>
+            </Link>
+          ))}
+        </div>
       </section>
+
+      {/* Spirituality & Sacred Texts (books) */}
+      <div className="mb-14">
+        <Suspense fallback={<CoverRowSkeleton title="Spirituality & Sacred Texts" />}>
+          <SpiritualitySection />
+        </Suspense>
+      </div>
 
       {/* Popular */}
       <div className="mb-14">
@@ -132,14 +167,33 @@ export default function Home() {
         </Suspense>
       </div>
 
-      {/* Spirituality */}
-      <div className="mb-14">
-        <Suspense fallback={<CoverRowSkeleton title="Spirituality & Sacred Texts" />}>
-          <SpiritualitySection />
-        </Suspense>
-      </div>
+      {/* Spiritual Teachings */}
+      <section className="mb-14">
+        <div className="flex items-baseline justify-between mb-5">
+          <h2 className="font-serif text-xl text-charcoal">Spiritual Teachings</h2>
+          <Link href="/teachings" className="text-sm text-gold hover:underline">
+            View all →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {SPIRITUAL_TEACHINGS.slice(0, 3).map((t) => (
+            <Link
+              key={t.id}
+              href={`/teachings/${t.id}`}
+              className="bg-paper border border-gold/10 rounded-xl p-5 flex flex-col gap-3 hover:border-gold/30 transition-colors group"
+            >
+              <span className="text-3xl">{t.icon}</span>
+              <div>
+                <p className="text-sm font-medium text-charcoal group-hover:text-gold transition-colors leading-tight">{t.title}</p>
+                <p className="text-xs text-muted mt-1 line-clamp-3">{t.summary}</p>
+              </div>
+              <span className="text-[11px] text-gold/60 mt-auto">{t.tradition}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-      {/* Religion */}
+      {/* Religion & Faiths */}
       <div className="mb-14">
         <Suspense fallback={<CoverRowSkeleton title="Religion & Faiths" />}>
           <ReligionSection />
@@ -160,18 +214,47 @@ export default function Home() {
         </Suspense>
       </div>
 
+      {/* Heritage Sites */}
+      <section className="mb-14">
+        <div className="flex items-baseline justify-between mb-5">
+          <h2 className="font-serif text-xl text-charcoal">Heritage Sites</h2>
+          <Link href="/heritage" className="text-sm text-gold hover:underline">
+            View all →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {HERITAGE_SITES.slice(0, 3).map((site) => (
+            <Link
+              key={site.id}
+              href={`/heritage/${site.id}`}
+              className="bg-paper border border-gold/10 rounded-xl p-5 flex flex-col gap-2 hover:border-gold/30 transition-colors group"
+            >
+              <p className="text-sm font-medium text-charcoal group-hover:text-gold transition-colors">{site.name}</p>
+              <p className="text-xs text-muted">{site.location}, {site.country}</p>
+              <p className="text-xs text-muted line-clamp-2">{site.description}</p>
+              <div className="flex items-center gap-2 mt-auto">
+                <span className="text-[11px] text-gold/60">{site.tradition}</span>
+                {site.unesco && (
+                  <span className="text-[10px] px-1.5 py-0.5 bg-gold/10 text-gold rounded-full">UNESCO</span>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Community CTA */}
-      <section className="text-center py-14 bg-charcoal rounded-2xl px-6 mb-8">
-        <h2 className="font-serif text-2xl sm:text-3xl text-white mb-3">
+      <section className="text-center py-14 bg-cream-dark/60 border border-gold/10 rounded-2xl px-6 mb-8">
+        <h2 className="font-serif text-2xl sm:text-3xl text-charcoal mb-3">
           Have something to share?
         </h2>
-        <p className="text-white/60 mb-6 max-w-md mx-auto text-sm">
+        <p className="text-muted mb-6 max-w-md mx-auto text-sm">
           Upload your own books to the community library. PDF, EPUB, TXT, and
           MOBI supported.
         </p>
         <Link
           href="/upload"
-          className="inline-block px-6 py-3 bg-burgundy text-white rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
+          className="inline-block px-6 py-3 bg-gold text-cream rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
         >
           Upload a Book
         </Link>

@@ -29,13 +29,13 @@ export default function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for books, authors, topics..."
-          className={`w-full bg-white border border-charcoal/15 rounded-lg px-4 py-3 pr-12 text-charcoal placeholder:text-muted/60 focus:border-burgundy focus:ring-0 transition-colors ${
+          className={`w-full bg-paper border border-charcoal/15 rounded-lg px-4 py-3 pr-12 text-charcoal placeholder:text-muted/60 focus:border-gold focus:ring-0 transition-colors ${
             large ? "text-lg py-4 px-5" : "text-sm"
           }`}
         />
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted hover:text-burgundy transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted hover:text-gold transition-colors"
           aria-label="Search"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
