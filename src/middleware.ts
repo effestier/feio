@@ -5,14 +5,7 @@ import type { NextRequest } from "next/server";
 const rateLimit = new Map<string, { count: number; reset: number }>();
 const MAX_REQUESTS = 60; // per window
 const WINDOW_MS = 60_000; // 1 minute
-
-// Periodic cleanup to prevent memory leaks (every 5 minutes)
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of rateLimit) {
-    if (now > entry.reset) rateLimit.delete(key);
-  }
-}, 300_000).unref();
+let lastCleanup = Date.now();
 
 function getClientIp(req: NextRequest): string {
   return (
@@ -30,6 +23,15 @@ export function middleware(req: NextRequest) {
     const ip = getClientIp(req);
     const key = `${ip}:${pathname.split("/").slice(0, 3).join("/")}`;
     const now = Date.now();
+
+    // Inline cleanup every 5 minutes
+    if (now - lastCleanup > 300_000) {
+      lastCleanup = now;
+      for (const [k, entry] of rateLimit) {
+        if (now > entry.reset) rateLimit.delete(k);
+      }
+    }
+
     const entry = rateLimit.get(key);
 
     if (!entry || now > entry.reset) {

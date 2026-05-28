@@ -12,6 +12,7 @@ export default function UploadForm() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
+  const [key, setKey] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
@@ -29,6 +30,7 @@ export default function UploadForm() {
     formData.append("title", title || file.name.replace(/\.[^.]+$/, ""));
     formData.append("author", author || "Anonymous");
     formData.append("description", description);
+    if (key) formData.append("key", key);
 
     try {
       const res = await fetch("/api/upload", {
@@ -159,6 +161,21 @@ export default function UploadForm() {
           rows={3}
           className="w-full bg-white border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-burgundy focus:ring-0 transition-colors resize-none"
         />
+      </div>
+
+      {/* Upload Key */}
+      <div>
+        <label className="block text-sm font-medium text-charcoal mb-1.5">
+          Upload Key
+        </label>
+        <input
+          type="password"
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+          placeholder="Enter upload key"
+          className="w-full bg-white border border-charcoal/15 rounded-lg px-4 py-2.5 text-sm text-charcoal placeholder:text-muted/50 focus:border-burgundy focus:ring-0 transition-colors"
+        />
+        <p className="text-xs text-muted/60 mt-1">Required to prevent unauthorized uploads</p>
       </div>
 
       {/* Submit */}
