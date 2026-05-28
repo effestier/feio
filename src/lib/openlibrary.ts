@@ -83,9 +83,8 @@ export async function getByGenre(genreSlug: string, limit = 20, offset = 0): Pro
   const keywords = GENRE_SEARCH_TERMS[genreSlug];
   if (!keywords || keywords.length === 0) return { books: [], hasMore: false };
 
-  // Fetch enough to cover offset + limit + buffer for dedup
-  const totalNeeded = offset + limit + 10;
-  const perKeyword = Math.ceil(totalNeeded / keywords.length) + 3;
+  // Fetch significantly more per keyword to get enough books with covers
+  const perKeyword = Math.max(Math.ceil((offset + limit) * 2 / keywords.length) + 5, 15);
 
   // Fire all keyword searches in parallel
   const results = await Promise.allSettled(
@@ -111,7 +110,7 @@ export async function getByGenre(genreSlug: string, limit = 20, offset = 0): Pro
     }
   }
 
-  // Prefer books with covers
+  // Strongly prefer books with covers — put them first
   const withCover = merged.filter((b) => b.cover_i);
   const withoutCover = merged.filter((b) => !b.cover_i);
   const sorted = [...withCover, ...withoutCover];
