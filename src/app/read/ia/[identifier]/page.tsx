@@ -29,14 +29,20 @@ export default async function IAReadPage({
         ? (meta.metadata.creator as string[]).join(", ")
         : "Unknown";
 
-  // Check if text format is available for reading
+  // Check if any readable format exists (text or scanned pages)
   const files = meta.files || [];
   const hasHtml = files.some((f) => f.format === "HTML");
   const hasTxt = files.some(
     (f) => f.format === "Plain Text" || f.format === "DjVuTXT"
   );
+  const hasScanned = files.some(
+    (f) =>
+      f.format === "DjVu" ||
+      f.format === "Single Page Processed JP2 ZIP" ||
+      f.format === "Image Container PDF"
+  );
 
-  if (!hasHtml && !hasTxt) {
+  if (!hasHtml && !hasTxt && !hasScanned) {
     notFound();
   }
 

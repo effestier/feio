@@ -11,9 +11,9 @@ interface ReaderPrefs {
 
 const DEFAULT_PREFS: ReaderPrefs = {
   fontSize: 18,
-  fontFamily: "sans",
+  fontFamily: "serif",
   theme: "light",
-  lineHeight: 1.8,
+  lineHeight: 1.85,
 };
 
 const STORAGE_KEY = "feio-reader-prefs";

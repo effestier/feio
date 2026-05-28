@@ -25,7 +25,7 @@ export async function GET(
   return new NextResponse(buffer, {
     headers: {
       "Content-Type": book.mimeType || "application/octet-stream",
-      "Content-Disposition": `attachment; filename="${book.originalName}"`,
+      "Content-Disposition": `attachment; filename="${book.originalName.replace(/[^a-zA-Z0-9.\-_\s]/g, "_").slice(0, 200)}"`,
       "Content-Length": buffer.length.toString(),
     },
   });

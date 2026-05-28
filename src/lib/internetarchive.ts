@@ -125,14 +125,17 @@ export function getIAReadUrl(meta: IAMetadata): string | null {
 }
 
 /**
- * Check if an IA item has readable text (HTML or Plain Text).
+ * Check if an IA item is readable — has text formats or scanned pages (BookReader embed).
  */
 export function hasIAReadableText(meta: IAMetadata): boolean {
   return meta.files.some(
     (f) =>
       f.format === "HTML" ||
       f.format === "Plain Text" ||
-      f.format === "DjVuTXT"
+      f.format === "DjVuTXT" ||
+      f.format === "DjVu" ||
+      f.format === "Single Page Processed JP2 ZIP" ||
+      f.format === "Image Container PDF"
   );
 }
 

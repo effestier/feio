@@ -1,6 +1,6 @@
 import { getBookDetail, searchBySubject, coverUrl } from "@/lib/openlibrary";
 import { findGutenbergMatch, getReadUrl, getDownloadFormats } from "@/lib/gutenberg";
-import { searchIA, getIAMetadata, getIAUrl, getIAReadUrl, getIADownloadFormats, hasIAReadableText } from "@/lib/internetarchive";
+import { searchIA, getIAMetadata, getIAUrl, getIADownloadFormats, hasIAReadableText } from "@/lib/internetarchive";
 import { searchSE } from "@/lib/standardebooks";
 import type { BookDoc } from "@/lib/types";
 import BookGrid from "@/components/BookGrid";
@@ -77,7 +77,6 @@ export default async function BookPage({
 
   // Build actions list
   const iaHasText = iaMeta ? hasIAReadableText(iaMeta) : false;
-  const iaReadUrl = iaMeta ? getIAReadUrl(iaMeta) : null;
   const iaDownloads = iaMeta ? getIADownloadFormats(iaMeta) : [];
   const iaUrl = iaBook ? getIAUrl(iaBook.identifier) : null;
 

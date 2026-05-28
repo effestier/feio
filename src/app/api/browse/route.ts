@@ -3,8 +3,8 @@ import { getByGenre } from "@/lib/openlibrary";
 
 export async function GET(req: NextRequest) {
   const genre = req.nextUrl.searchParams.get("genre");
-  const limit = Number(req.nextUrl.searchParams.get("limit")) || 20;
-  const offset = Number(req.nextUrl.searchParams.get("offset")) || 0;
+  const limit = Math.min(Math.max(Number(req.nextUrl.searchParams.get("limit")) || 20, 1), 100);
+  const offset = Math.max(Number(req.nextUrl.searchParams.get("offset")) || 0, 0);
 
   if (!genre) {
     return NextResponse.json({ error: "genre required" }, { status: 400 });
