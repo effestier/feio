@@ -1,70 +1,88 @@
 import Link from "next/link";
 
+const GENRE_LINKS = [
+  { href: "/browse/fiction", label: "Fiction" },
+  { href: "/browse/science", label: "Science" },
+  { href: "/browse/history", label: "History" },
+  { href: "/browse/philosophy", label: "Philosophy" },
+  { href: "/browse/romance", label: "Romance" },
+  { href: "/browse/mystery", label: "Mystery" },
+  { href: "/browse/fantasy", label: "Fantasy" },
+  { href: "/browse/biography", label: "Biography" },
+  { href: "/browse/poetry", label: "Poetry" },
+  { href: "/browse/science_fiction", label: "Sci-Fi" },
+  { href: "/browse/horror", label: "Horror" },
+  { href: "/browse/adventure", label: "Adventure" },
+];
+
 export default function Footer() {
   return (
-    <footer className="border-t border-gold/10 bg-cream/90 mt-auto">
+    <footer className="border-t border-[#D4C5A9]/30 bg-cream/95 mt-auto">
       <div className="max-w-6xl mx-auto px-4 py-10">
         {/* Top */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
-          <div>
-            <p className="font-serif text-lg font-bold text-gold mb-2">FEIO</p>
-            <p className="text-sm text-muted leading-relaxed">
-              A digital library for the curious. Browse millions of books, read
-              classics for free, and share your own collection.
+          <div className="sm:col-span-1">
+            <p className="font-serif text-lg font-bold text-burgundy mb-2">FEIO</p>
+            <p className="text-sm text-[#6B5B45] leading-relaxed">
+              A classic digital library. Browse millions of free books, read
+              timeless classics, and discover your next great read.
             </p>
           </div>
 
-          {/* Links */}
+          {/* Browse */}
           <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-muted mb-3">
-              Explore
+            <p className="text-xs font-medium uppercase tracking-widest text-[#8B7355] mb-3">
+              Browse
             </p>
             <div className="flex flex-col gap-2 text-sm">
-              <Link href="/browse/fiction" className="text-muted hover:text-gold transition-colors">
-                Browse Books
+              <Link href="/browse/fiction" className="text-[#6B5B45] hover:text-burgundy transition-colors">
+                All Genres
               </Link>
-              <Link href="/scriptures" className="text-muted hover:text-gold transition-colors">
-                Scriptures
+              <Link href="/search" className="text-[#6B5B45] hover:text-burgundy transition-colors">
+                Search Books
               </Link>
-              <Link href="/teachings" className="text-muted hover:text-gold transition-colors">
-                Teachings
-              </Link>
-              <Link href="/heritage" className="text-muted hover:text-gold transition-colors">
-                Heritage
-              </Link>
-              <Link href="/festivals" className="text-muted hover:text-gold transition-colors">
-                Festivals
-              </Link>
-              <Link href="/concepts" className="text-muted hover:text-gold transition-colors">
-                Concepts
-              </Link>
-              <Link href="/meditate" className="text-muted hover:text-gold transition-colors">
-                Meditate
-              </Link>
-              <Link href="/search?q=" className="text-muted hover:text-gold transition-colors">
-                Search
-              </Link>
-              <Link href="/library" className="text-muted hover:text-gold transition-colors">
+              <Link href="/library" className="text-[#6B5B45] hover:text-burgundy transition-colors">
                 Community Library
               </Link>
+              <Link href="/upload" className="text-[#6B5B45] hover:text-burgundy transition-colors">
+                Upload a Book
+              </Link>
+            </div>
+          </div>
+
+          {/* Genres */}
+          <div>
+            <p className="text-xs font-medium uppercase tracking-widest text-[#8B7355] mb-3">
+              Genres
+            </p>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+              {GENRE_LINKS.slice(0, 8).map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="text-sm text-[#6B5B45] hover:text-burgundy transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Built by */}
           <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-muted mb-3">
+            <p className="text-xs font-medium uppercase tracking-widest text-[#8B7355] mb-3">
               Built By
             </p>
             <p className="text-sm text-charcoal font-medium mb-1">Karan</p>
-            <p className="text-sm text-muted mb-3">
+            <p className="text-sm text-[#6B5B45] mb-3">
               Full-stack developer building things that matter.
             </p>
             <a
               href="https://kwen.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-gold hover:text-burgundy-light transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-burgundy hover:text-burgundy-light transition-colors"
             >
               kwen.in
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -75,14 +93,15 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-gold/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted/60">
+        <div className="border-t border-[#D4C5A9]/30 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8B7355]/70">
           <p>
             Made with care by{" "}
-            <a href="https://kwen.in" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">
+            <a href="https://kwen.in" target="_blank" rel="noopener noreferrer" className="text-burgundy hover:underline">
               Karan
             </a>
             {" "}&middot; &copy; {new Date().getFullYear()} FEIO
           </p>
+          <p>Powered by Open Library, Project Gutenberg &amp; Internet Archive</p>
         </div>
       </div>
     </footer>

@@ -34,8 +34,8 @@ export default async function BrowsePage({
             href={`/browse/${genre.slug}`}
             className={`flex-shrink-0 px-3 py-1.5 text-sm rounded-full border transition-colors ${
               genre.slug === decoded
-                ? "bg-gold text-cream border-gold"
-                : "bg-paper border-charcoal/10 text-muted hover:text-charcoal hover:border-charcoal/30"
+                ? "bg-burgundy text-white border-burgundy"
+                : "bg-paper border-[#D4C5A9]/40 text-[#6B5B45] hover:text-charcoal hover:border-[#B8860B]/50"
             }`}
           >
             {genre.emoji} {genre.label}

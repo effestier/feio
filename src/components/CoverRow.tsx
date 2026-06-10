@@ -11,7 +11,7 @@ export default function CoverRow({ books, title, seeAllHref }: { books: BookDoc[
       <div className="flex items-baseline justify-between mb-4">
         <h2 className="font-serif text-xl text-charcoal">{title}</h2>
         {seeAllHref && (
-          <Link href={seeAllHref} className="text-sm text-gold hover:underline">
+          <Link href={seeAllHref} className="text-sm text-burgundy hover:underline font-medium">
             See all →
           </Link>
         )}
@@ -27,7 +27,7 @@ export default function CoverRow({ books, title, seeAllHref }: { books: BookDoc[
               href={href}
               className="cover-hover flex-shrink-0 w-[120px] sm:w-[140px]"
             >
-              <div className="relative aspect-[2/3] bg-cream-dark rounded-md overflow-hidden mb-1.5">
+              <div className="relative aspect-[2/3] bg-[#EDE6DC] rounded-md overflow-hidden mb-1.5 shadow-sm">
                 {book.cover_i ? (
                   <Image
                     src={cover}
@@ -39,7 +39,7 @@ export default function CoverRow({ books, title, seeAllHref }: { books: BookDoc[
                     unoptimized
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-cream-dark text-muted text-[10px] text-center px-2">
+                  <div className="w-full h-full flex items-center justify-center bg-[#EDE6DC] text-[#8B7355] text-[10px] text-center px-2">
                     {book.title}
                   </div>
                 )}
@@ -48,7 +48,7 @@ export default function CoverRow({ books, title, seeAllHref }: { books: BookDoc[
                 {book.title}
               </p>
               {book.author_name && (
-                <p className="text-[10px] text-muted mt-0.5 line-clamp-1">
+                <p className="text-[10px] text-[#8B7355] mt-0.5 line-clamp-1">
                   {book.author_name[0]}
                 </p>
               )}

@@ -123,7 +123,7 @@ export default async function BookPage({
               {gutenbergId && hasRead && (
                 <Link
                   href={`/read/${gutenbergId}`}
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-gold text-cream rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-burgundy text-white rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -141,7 +141,7 @@ export default async function BookPage({
                       <a
                         key={format}
                         href={`/api/book/${gutenbergId}/download?format=${format}`}
-                        className="px-3 py-1.5 text-xs font-medium bg-paper border border-charcoal/15 rounded-md hover:border-gold hover:text-gold transition-colors tracking-wider"
+                        className="px-3 py-1.5 text-xs font-medium bg-white border border-[#D4C5A9]/50 rounded-md hover:border-burgundy hover:text-burgundy transition-colors tracking-wider"
                       >
                         {label}
                       </a>
@@ -154,7 +154,7 @@ export default async function BookPage({
               {!gutenbergId && iaHasText && iaBook && (
                 <Link
                   href={`/read/ia/${iaBook.identifier}`}
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-gold text-cream rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-burgundy text-white rounded-lg font-medium text-sm hover:bg-burgundy-light transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -172,7 +172,7 @@ export default async function BookPage({
                       <a
                         key={format}
                         href={`/api/ia/${iaBook.identifier}/download?format=${format}`}
-                        className="px-3 py-1.5 text-xs font-medium bg-paper border border-charcoal/15 rounded-md hover:border-gold hover:text-gold transition-colors tracking-wider"
+                        className="px-3 py-1.5 text-xs font-medium bg-white border border-[#D4C5A9]/50 rounded-md hover:border-burgundy hover:text-burgundy transition-colors tracking-wider"
                       >
                         {format.toUpperCase()}
                       </a>
@@ -187,7 +187,7 @@ export default async function BookPage({
                   href={iaUrl}
                   target="_blank"
                   rel="noopener"
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-cream-dark text-charcoal rounded-lg font-medium text-sm hover:bg-cream-dark transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-[#EDE6DC] text-charcoal rounded-lg font-medium text-sm hover:bg-[#E0D5C4] transition-all hover:shadow-sm"
                 >
                   View on Internet Archive
                 </a>
@@ -196,12 +196,12 @@ export default async function BookPage({
               {/* Standard Ebooks — premium formatted */}
               {seBook && (
                 <div>
-                  <p className="text-xs text-gold mb-2 uppercase tracking-wider font-medium">Premium Edition</p>
+                  <p className="text-xs text-[#B8860B] mb-2 uppercase tracking-wider font-medium">Premium Edition</p>
                   <a
                     href={seBook.url}
                     target="_blank"
                     rel="noopener"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-cream-dark text-charcoal rounded-lg font-medium text-sm hover:bg-cream-dark transition-colors"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-[#EDE6DC] text-charcoal rounded-lg font-medium text-sm hover:bg-[#E0D5C4] transition-all hover:shadow-sm"
                   >
                     Standard Ebooks
                     {seBook.epubUrl && <span className="text-xs text-charcoal/60 ml-1">(EPUB)</span>}
@@ -250,7 +250,7 @@ export default async function BookPage({
                   <Link
                     key={subject}
                     href={`/browse/${encodeURIComponent(subject.toLowerCase().replace(/\s+/g, "_"))}`}
-                    className="px-3 py-1 text-xs bg-paper border border-charcoal/10 rounded-full hover:border-gold/30 hover:text-gold transition-colors"
+                    className="px-3 py-1 text-xs bg-white border border-[#D4C5A9]/40 rounded-full hover:border-burgundy/40 hover:text-burgundy transition-colors"
                   >
                     {subject}
                   </Link>
